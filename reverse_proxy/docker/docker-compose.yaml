@@ -1,22 +1,24 @@
+version: '3.1'
+
 services:
   traefik:
     image: traefik
     ports:
       # only expose https to outside world
-      - "443:443"   # SSL
+      - '443:443' # SSL
     expose:
       # traefik dashboard port
       - 8080
     labels:
       traefik.enable: true
-      traefik.frontend.rule: "Host:traefik.long-bui.de"
+      traefik.frontend.rule: 'Host:traefik.long-bui.de'
       traefik.frontend.auth.basic.usersFile: ./.htaccess
       traefik.port: 8080
   volumes:
-  - /var/run/docker.sock:/var/run/docker.sock
-  - ./traefik.toml:/etc/traefik/traefik.toml
-  - ./acme.json:/acme.json
-  restart: "always"
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./traefik.toml:/etc/traefik/traefik.toml
+    - ./acme.json:/acme.json
+  restart: 'always'
 networks:
   backends:
     driver: bridge
