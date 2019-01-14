@@ -4,11 +4,13 @@ services:
   traefik:
     image: traefik
     ports:
-      # only expose https to outside world
-      - '443:443' # SSL
+      - '80:80'
+      - '443:443'
     expose:
       # traefik dashboard port
       - 8080
+      # acme challenge
+      - 80
     labels:
       traefik.enable: 'true'
       traefik.frontend.rule: 'Host:traefik.long-bui.de'
