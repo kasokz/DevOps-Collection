@@ -12,9 +12,10 @@ services:
     labels:
       traefik.enable: 'true'
       traefik.frontend.rule: 'Host:traefik.long-bui.de'
-      traefik.frontend.auth.basic.usersFile: ./.htaccess
+      traefik.frontend.auth.basic.usersFile: '.htaccess'
       traefik.port: '8080'
     volumes:
+      - ./.htaccess:/.htaccess
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.toml:/etc/traefik/traefik.toml
       - ./acme.json:/acme.json
