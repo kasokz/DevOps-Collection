@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.2'
 
 services:
   traefik:
@@ -10,15 +10,18 @@ services:
       # traefik dashboard port
       - 8080
     labels:
-      traefik.enable: true
+      traefik.enable: 'true'
       traefik.frontend.rule: 'Host:traefik.long-bui.de'
       traefik.frontend.auth.basic.usersFile: ./.htaccess
-      traefik.port: 8080
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - ./traefik.toml:/etc/traefik/traefik.toml
-    - ./acme.json:/acme.json
-  restart: 'always'
+      traefik.port: '8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/etc/traefik/traefik.toml
+      - ./acme.json:/acme.json
+    restart: 'always'
+    networks:
+      - backends
+
 networks:
   backends:
     driver: bridge
