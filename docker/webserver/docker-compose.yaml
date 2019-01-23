@@ -1,0 +1,27 @@
+version: '3.2'
+
+services:
+  nginx-webserver:
+    image: nginx:latest
+    # Uncomment to run as standalone container
+    # Needs seperate SSL setup!
+    # ports:
+    #   - 80:80
+    #   - 443:443
+    expose:
+      - 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./site-content:/usr/share/nginx/html
+    networks:
+      - docker-network
+    # Comment to disable Traefik to reverse proxy to this container
+    labels:
+      traefik.enable: 'true'
+      # Adjust this!
+      traefik.frontend.rule: 'Host:subdomain.domain.tld'
+      traefik.port: '80'
+
+networks:
+  docker-network:
+    driver: bridge

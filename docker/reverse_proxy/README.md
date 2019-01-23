@@ -1,6 +1,6 @@
-# Reverse Proxy Setup using Docker
+# Reverse Proxy Setup
 
-This part of the collection can be used to setup a reverse proxy using Docker.
+This part of the collection can be used to setup a reverse proxy.
 My personal choice for reverse proxies is Traefik since it was specially designed for this purpose.
 The configuration is simple but offers enough options for more complex applications.
 The integrated ACME functionality is also very easy to configure.
@@ -11,10 +11,6 @@ To overcome this, we label the Traefik service itself to be a Traefik backend.
 This makes Traefik generate a certificate for itself.
 To at least get one layer of security for the dashboard, we use basic HTTP authentication using an *.htaccess* file.
 The workaround used here is inspired by this [blog post](https://medium.com/@xavier.priour/secure-traefik-dashboard-with-https-and-password-in-docker-5b657e2aa15f).
-
-What you'll need:
-1. Docker installed
-2. docker-compose installed
 
 Setup steps:
 1. After cloning first change the rights of the `acme.json` file with `chmod 600 acme.json`.
