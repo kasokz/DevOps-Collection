@@ -13,11 +13,11 @@ services:
       # Adjust this!
       traefik.frontend.rule: 'Host:subdomain.domain.tld'
       traefik.port: '80'
-      traefik.docker.network: 'backends'
+      traefik.docker.network: 'reverse_proxy_backends'
     networks:
-      - backends
+      - reverse_proxy_backends
 
 networks:
-  backends:
+  reverse_proxy_backends:
     external:
       name: reverse_proxy_backends
