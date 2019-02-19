@@ -1,1 +1,0 @@
-helm install --name ingress --values .\values.yaml stable/nginx-ingress

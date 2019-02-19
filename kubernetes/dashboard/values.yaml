@@ -1,0 +1,15 @@
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
+    certmanager.k8s.io/acme-challenge-type: http01
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  paths:
+    - /
+  hosts:
+    - kubernetes-dashboard.long-bui.de
+  tls:
+    - secretName: kubernetes-dashboard-tls
+      hosts:
+        - kubernetes-dashboard.long-bui.de
