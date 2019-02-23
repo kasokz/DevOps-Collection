@@ -28,3 +28,14 @@ prometheus:
 kubelet:
   serviceMonitor:
     https: true
+coreDns:
+  enabled: true
+  service:
+    selector:
+      k8s-app: kube-dns
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
