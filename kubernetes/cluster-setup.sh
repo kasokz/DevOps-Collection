@@ -22,3 +22,6 @@ kubectl label namespace ingress-controller certmanager.k8s.io/disable-validation
 helm install --name cert-manager --namespace ingress-controller stable/cert-manager
 sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
+
+# Prometheus
+helm install --namespace monitoring --name prometheus-operator --values ./monitoring/prometheus-operator/values.yaml stable/prometheus-operator
