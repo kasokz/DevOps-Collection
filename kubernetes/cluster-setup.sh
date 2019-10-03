@@ -1,5 +1,5 @@
 # Pod Network Add-On
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 # Init helm
 kubectl apply -f ./helm
@@ -16,7 +16,7 @@ kubectl apply -f ./dashboard/user.yaml
 helm install --name ingress --values ./ingress-controller/values.yaml --namespace ingress-controller stable/nginx-ingress
 
 # Let's Encrypt for Ingresses
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.6/deploy/manifests/00-crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.10.1/cert-manager.yaml
 sleep 5
 kubectl label namespace ingress-controller certmanager.k8s.io/disable-validation=true
 helm install --name cert-manager --namespace ingress-controller stable/cert-manager

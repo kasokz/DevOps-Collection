@@ -24,7 +24,6 @@ prometheus:
       - "default"
       - "kube-public"
       - "brick"
-      - "long"
 kubelet:
   serviceMonitor:
     https: true
