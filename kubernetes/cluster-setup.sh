@@ -19,7 +19,7 @@ helm install --name ingress --values ./ingress-controller/values.yaml --namespac
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.10.1/cert-manager.yaml
 sleep 5
 kubectl label namespace ingress-controller certmanager.k8s.io/disable-validation=true
-helm install --name cert-manager --namespace ingress-controller stable/cert-manager
+helm install --name cert-manager --namespace ingress-controller jetstack/cert-manager --version v0.10.1
 sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
 
