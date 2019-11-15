@@ -1,10 +1,6 @@
 # Pod Network Add-On
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-# Init helm
-kubectl apply -f ./helm
-helm init --service-account tiller --upgrade
-
 # Metrics server
 helm install --name metrics-server --namespace kube-system --values ./metrics-server/values.yaml stable/metrics-server
 
