@@ -10,8 +10,6 @@ kubectl -n kube-system patch deployment coredns --type json -p '[{"op":"add","pa
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # Hetzner CSI
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/csi-api/release-1.14/pkg/crd/manifests/csidriver.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/csi-api/release-1.14/pkg/crd/manifests/csinodeinfo.yaml
 kubectl apply -f https://raw.githubusercontent.com/hetznercloud/csi-driver/master/deploy/kubernetes/hcloud-csi.yml
 
 # Loadbalancer using metallb + floating IPs
