@@ -2,4 +2,8 @@ args:
   - --logtostderr
   - --metric-resolution=30s
   - --kubelet-insecure-tls
-  - --kubelet-preferred-address-types=InternalIP
+  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+service:
+  labels:
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "Metrics-server"

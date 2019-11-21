@@ -1,7 +1,7 @@
+rbac:
+  create: true
 controller:
   kind: DaemonSet
   hostNetwork: true
-  dnsPolicy: ClusterFirstWithHostNet
-tcp:
-  1883: "long/mosquitto-iot:1883"
-  9001: "long/mosquitto-iot:9001"
+  service:
+    type: ClusterIP

@@ -2,8 +2,7 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
-    certmanager.k8s.io/acme-challenge-type: http01
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
   paths:
     - /
   hosts:
@@ -13,3 +12,5 @@ ingress:
       hosts:
         - kubernetes-dashboard.long-bui.de
 enableInsecureLogin: true
+rbac:
+  clusterAdminRole: true

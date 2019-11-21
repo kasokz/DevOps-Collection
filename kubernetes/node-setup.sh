@@ -1,32 +1,44 @@
 #!/bin/bash
 swapoff -a
 apt-get update
+
+cat <<EOF >/etc/network/interfaces.d/60-floating-ip.cfg
+auto eth0:1
+iface eth0:1 inet static
+  address 78.47.156.14
+  netmask 32
+EOF
+systemctl restart networking.service
+
+mkdir /etc/systemd/system/kubelet.service.d
+cat <<EOF >/etc/systemd/system/kubelet.service.d/20-hetzner-cloud.conf
+[Service]
+Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
+EOF
+
+mkdir /etc/systemd/system/docker.service.d
+cat <<EOF >/etc/systemd/system/docker.service.d/00-cgroup-systemd.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --exec-opt native.cgroupdriver=systemd
+EOF
+systemctl daemon-reload
+
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
-apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 18.06 | head -1 | awk '{print $3}')
-
-apt-get update && apt-get install -y apt-transport-https curl
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
+cat <<EOF >/etc/apt/sources.list.d/docker-and-kubernetes.list
+        deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable
+        deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
 EOF
 apt-get update
-apt-get install -y kubelet kubeadm kubectl
+apt-get install -y docker-ce kubelet=1.16.3-00 kubeadm=1.16.3-00 kubectl=1.16.3-00
+apt-mark hold docker-ce kubelet kubeadm kubectl
 
-cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
+cat <<EOF >>/etc/sysctl.conf
+# Allow IP forwarding for kubernetes
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+net.ipv6.conf.default.forwarding = 1
 EOF
-
-mkdir -p /etc/systemd/system/docker.service.d
-
-# Restart docker.
-systemctl daemon-reload
-systemctl restart docker
+sysctl -p

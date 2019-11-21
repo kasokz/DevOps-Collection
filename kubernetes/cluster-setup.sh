@@ -1,21 +1,46 @@
+# Hetzner Cloud Controller Manager (Adjust placeholders!)
+kubectl apply -f ./setup/hcloud-controller-manager.yaml
+
 # Pod Network Add-On
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl -n kube-system patch daemonset kube-flannel-ds-amd64 --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
+kubectl -n kube-system patch deployment coredns --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
+
+# Untaint master nodes
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+# Hetzner CSI
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/csi-api/release-1.14/pkg/crd/manifests/csidriver.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/csi-api/release-1.14/pkg/crd/manifests/csinodeinfo.yaml
+kubectl apply -f https://raw.githubusercontent.com/hetznercloud/csi-driver/master/deploy/kubernetes/hcloud-csi.yml
+
+# Loadbalancer using metallb + floating IPs
+kubectl create namespace metallb
+helm install metallb stable/metallb --namespace metallb
+kubectl apply -f ./setup/metallb.yaml
+
+# Floating IP failover
+kubectl create namespace fip-controller
+kubectl apply -f https://raw.githubusercontent.com/cbeneke/hcloud-fip-controller/master/deploy/rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/cbeneke/hcloud-fip-controller/master/deploy/deployment.yaml
+kubectl apply -f ./setup/metallb.yaml
 
 # Metrics server
-helm install --name metrics-server --namespace kube-system --values ./metrics-server/values.yaml stable/metrics-server
+helm install metrics-server stable/metrics-server --namespace kube-system --values ./metrics-server/values.yaml
 
 # Dashboard
-helm install --name dashboard --namespace kube-system --values ./dashboard/values.yaml stable/kubernetes-dashboard
-kubectl apply -f ./dashboard/user.yaml
+helm install dashboard stable/kubernetes-dashboard --namespace kube-system --values ./dashboard/values.yaml --version 1.10.1
 
 # Ingress
-helm install --name ingress --values ./ingress-controller/values.yaml --namespace ingress-controller stable/nginx-ingress
-
+helm repo add nginx https://helm.nginx.com/stable
+kubectl create namespace ingress
+helm install ingress stable/nginx-ingress --namespace ingress --values ./ingress-controller/values.yaml
 # Let's Encrypt for Ingresses
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.10.1/cert-manager.yaml
+helm repo add jetstack https://charts.jetstack.io
+kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
 sleep 5
-kubectl label namespace ingress-controller certmanager.k8s.io/disable-validation=true
-helm install --name cert-manager --namespace ingress-controller jetstack/cert-manager --version v0.10.1
+kubectl label namespace ingress certmanager.k8s.io/disable-validation=true
+helm install cert-manager jetstack/cert-manager --namespace ingress
 sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
 
