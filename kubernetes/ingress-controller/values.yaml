@@ -1,7 +1,2 @@
 rbac:
   create: true
-controller:
-  kind: DaemonSet
-  hostNetwork: true
-  service:
-    type: ClusterIP

@@ -1,4 +1,4 @@
-kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-cert-extra-sans 10.0.0.1
+kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-cert-extra-sans 10.98.0.2 # Internal IP
 rm -rf ~/.kube
 mkdir -p ~/.kube
 cp -i /etc/kubernetes/admin.conf ~/.kube/config

@@ -28,7 +28,7 @@ apt-get install -y apt-transport-https ca-certificates curl software-properties-
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF >/etc/apt/sources.list.d/docker-and-kubernetes.list
-        deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable
+        deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
         deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
 EOF
 apt-get update
