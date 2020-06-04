@@ -27,7 +27,8 @@ kubectl apply -f ./setup/fip.yaml
 helm install metrics-server stable/metrics-server --namespace kube-system --values ./metrics-server/values.yaml
 
 # Dashboard
-helm install dashboard stable/kubernetes-dashboard --namespace kube-system --values ./dashboard/values.yaml --version 1.10.1
+kubectl create ns kubernetes-dashboard
+helm install dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --values ./dashboard/values.yaml
 
 # Ingress
 helm repo add nginx https://helm.nginx.com/stable

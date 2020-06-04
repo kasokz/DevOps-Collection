@@ -11,6 +11,5 @@ ingress:
     - secretName: kubernetes-dashboard-tls
       hosts:
         - kubernetes-dashboard.long-bui.de
-enableInsecureLogin: true
-rbac:
-  clusterAdminRole: true
+serviceAccount:
+  name: dashboard-user
