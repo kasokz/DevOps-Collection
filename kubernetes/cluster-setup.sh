@@ -35,7 +35,7 @@ kubectl create namespace ingress
 helm install ingress stable/nginx-ingress --namespace ingress --values ./ingress-controller/values.yaml
 # Let's Encrypt for Ingresses
 helm repo add jetstack https://charts.jetstack.io
-kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.13/deploy/manifests/00-crds.yaml
 sleep 5
 kubectl label namespace ingress certmanager.k8s.io/disable-validation=true
 helm install cert-manager jetstack/cert-manager --namespace ingress
@@ -44,3 +44,6 @@ kubectl apply -f ./ingress-controller/cert-manager
 
 # Prometheus
 helm install --namespace monitoring --name prometheus-operator --values ./monitoring/prometheus-operator/values.yaml stable/prometheus-operator
+
+# Gitlab-Runner
+helm install gitlab-runner gitlab/gitlab-runner -f ./gitlab-runner/values.yaml --set runnerRegistrationToken="<TOKEN>" -n loaddriver
