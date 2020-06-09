@@ -1,3 +1,5 @@
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
 # Hetzner Cloud Controller Manager (Adjust placeholders!)
 kubectl apply -f ./setup/hcloud-controller-manager.yaml
 
@@ -28,18 +30,19 @@ helm install metrics-server stable/metrics-server --namespace kube-system --valu
 
 # Dashboard
 kubectl create ns kubernetes-dashboard
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm install dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --values ./dashboard/values.yaml
 
 # Ingress
 helm repo add nginx https://helm.nginx.com/stable
 kubectl create namespace ingress
+# Don't use nginx/nginx-ingress yet, it doesn't seem to work
 helm install ingress stable/nginx-ingress --namespace ingress --values ./ingress-controller/values.yaml
 # Let's Encrypt for Ingresses
 helm repo add jetstack https://charts.jetstack.io
-kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.13/deploy/manifests/00-crds.yaml
 sleep 5
 kubectl label namespace ingress certmanager.k8s.io/disable-validation=true
-helm install cert-manager jetstack/cert-manager --namespace ingress
+helm install cert-manager jetstack/cert-manager --namespace ingress --version v0.15.1 --set installCRDs=true
 sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
 

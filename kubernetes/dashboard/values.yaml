@@ -13,3 +13,5 @@ ingress:
         - kubernetes-dashboard.long-bui.de
 serviceAccount:
   name: dashboard-user
+metricsScraper:
+  enabled: true
