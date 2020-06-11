@@ -6,14 +6,15 @@ grafana:
     enabled: true
     annotations:
       kubernetes.io/ingress.class: "nginx"
-      certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
-      certmanager.k8s.io/acme-challenge-type: http01
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
       - grafana.long-bui.de
+      - grafana.monomo.network
     tls:
       - secretName: grafana-monitoring-tls
         hosts:
           - grafana.long-bui.de
+          - grafana.monomo.network
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
@@ -23,7 +24,7 @@ prometheus:
       - "monitoring"
       - "default"
       - "kube-public"
-      - "brick"
+      - "screeps"
 kubelet:
   serviceMonitor:
     https: true
