@@ -47,7 +47,7 @@ sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
 
 # Prometheus
-helm install --namespace monitoring --name prometheus-operator --values ./monitoring/prometheus-operator/values.yaml stable/prometheus-operator
+helm install prometheus-operator stable/prometheus-operator --namespace monitoring --values ./monitoring/prometheus-operator/values.yaml
 
 # Gitlab-Runner
 helm install gitlab-runner gitlab/gitlab-runner -f ./gitlab-runner/values.yaml --set runnerRegistrationToken="<TOKEN>" -n loaddriver

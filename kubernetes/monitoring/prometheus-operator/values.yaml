@@ -15,16 +15,21 @@ grafana:
         hosts:
           - grafana.long-bui.de
           - grafana.monomo.network
+  persistence:
+    enabled: true
+    storageClassName: hcloud-volumes
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
-  rbac:
-    roleNamespaces:
-      - "kube-system"
-      - "monitoring"
-      - "default"
-      - "kube-public"
-      - "screeps"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+          storageClassName: hcloud-volumes
 kubelet:
   serviceMonitor:
     https: true
