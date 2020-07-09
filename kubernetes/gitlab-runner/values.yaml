@@ -65,7 +65,7 @@ runners:
 
   ## Specify whether the runner should be locked to a specific project: true, false. Defaults to true.
   ##
-  locked: true
+  locked: false
 
   ## Run all containers with the privileged flag enabled
   ## This will allow the docker:dind image to run if you need to run Docker

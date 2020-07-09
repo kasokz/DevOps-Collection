@@ -50,7 +50,7 @@ spec:
       labels:
         app: hcloud-cloud-controller-manager
       annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/critical-pod: ""
     spec:
       serviceAccount: cloud-controller-manager
       dnsPolicy: Default
@@ -80,7 +80,10 @@ spec:
             - "--cluster-cidr=10.244.0.0/16"
           resources:
             requests:
-              cpu: 100m
+              cpu: 30m
+              memory: 50Mi
+            limits:
+              cpu: 50m
               memory: 50Mi
           env:
             - name: NODE_NAME
