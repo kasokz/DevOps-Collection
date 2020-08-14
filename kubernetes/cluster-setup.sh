@@ -14,17 +14,6 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 # Hetzner CSI
 kubectl apply -f ./setup/csi.yaml
 
-# Loadbalancer using metallb + floating IPs
-kubectl create namespace metallb
-helm install metallb stable/metallb --namespace metallb
-kubectl apply -f ./setup/metallb.yaml
-
-# Floating IP failover
-kubectl create namespace fip-controller
-kubectl apply -f https://raw.githubusercontent.com/cbeneke/hcloud-fip-controller/master/deploy/rbac.yaml
-kubectl apply -f https://raw.githubusercontent.com/cbeneke/hcloud-fip-controller/master/deploy/deployment.yaml
-kubectl apply -f ./setup/fip.yaml
-
 # Metrics server
 helm install metrics-server stable/metrics-server --namespace kube-system --values ./metrics-server/values.yaml
 

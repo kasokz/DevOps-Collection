@@ -2,18 +2,6 @@
 swapoff -a
 apt-get update
 
-cat <<EOF >/etc/network/interfaces.d/60-floating-ip.cfg
-auto eth0:1
-iface eth0:1 inet static
-  address 78.47.156.14
-  netmask 32
-auto eth0:2
-iface eth0:2 inet static
-  address 116.202.181.46
-  netmask 32
-EOF
-systemctl restart networking.service
-
 mkdir /etc/systemd/system/kubelet.service.d
 cat <<EOF >/etc/systemd/system/kubelet.service.d/20-hetzner-cloud.conf
 [Service]
