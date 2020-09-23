@@ -8,6 +8,13 @@ cat <<EOF >/etc/systemd/system/kubelet.service.d/20-hetzner-cloud.conf
 Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
 EOF
 
+# For static CPU Manager Policy
+# mkdir /etc/systemd/system/kubelet.service.d
+# cat <<EOF >/etc/systemd/system/kubelet.service.d/20-hetzner-cloud.conf
+# [Service]
+# Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external --cpu-manager-policy=static --kube-reserved=cpu=100m,memory=1Gi,ephemeral-storage=1Gi --system-reserved=cpu=100m,memory=1Gi,ephemeral-storage=1Gi"
+# EOF
+
 mkdir /etc/systemd/system/docker.service.d
 cat <<EOF >/etc/systemd/system/docker.service.d/00-cgroup-systemd.conf
 [Service]
