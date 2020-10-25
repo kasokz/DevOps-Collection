@@ -69,7 +69,7 @@ spec:
           effect: "NoSchedule"
       hostNetwork: true
       containers:
-        - image: hetznercloud/hcloud-cloud-controller-manager:v1.4.0
+        - image: hetznercloud/hcloud-cloud-controller-manager:v1.8.0
           name: hcloud-cloud-controller-manager
           command:
             - "/bin/hcloud-cloud-controller-manager"
@@ -80,10 +80,10 @@ spec:
             - "--cluster-cidr=10.244.0.0/16"
           resources:
             requests:
-              cpu: 30m
+              cpu: 100m
               memory: 50Mi
             limits:
-              cpu: 50m
+              cpu: 100m
               memory: 50Mi
           env:
             - name: NODE_NAME

@@ -5,11 +5,12 @@ kubectl apply -f ./setup/hcloud-controller-manager.yaml
 
 # Pod Network Add-On
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl -n kube-system patch daemonset kube-flannel-ds-amd64 --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
+kubectl -n kube-system patch daemonset kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
 kubectl -n kube-system patch deployment coredns --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
 
 # Untaint master nodes
 kubectl taint nodes --all node-role.kubernetes.io/master-
+kubectl label nodes --all node-role.kubernetes.io/master-
 
 # Hetzner CSI
 kubectl apply -f ./setup/csi.yaml
@@ -23,15 +24,17 @@ helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm install dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --values ./dashboard/values.yaml
 
 # Ingress
-helm repo add nginx https://helm.nginx.com/stable
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo update
 kubectl create namespace ingress
 # Don't use nginx/nginx-ingress yet, it doesn't seem to work
-helm install ingress stable/nginx-ingress --namespace ingress --values ./ingress-controller/values.yaml
+helm install ingress ingress-nginx/ingress-nginx --namespace ingress --values ./ingress-controller/values.yaml
 # Let's Encrypt for Ingresses
 helm repo add jetstack https://charts.jetstack.io
 sleep 5
 kubectl label namespace ingress certmanager.k8s.io/disable-validation=true
-helm install cert-manager jetstack/cert-manager --namespace ingress --version v0.15.1 --set installCRDs=true
+helm install cert-manager jetstack/cert-manager --namespace ingress --version v1.0.3 --set installCRDs=true
 sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
 
