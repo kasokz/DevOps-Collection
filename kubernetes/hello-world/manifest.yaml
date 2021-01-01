@@ -33,7 +33,7 @@ spec:
       targetPort: 8080
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 metadata:
   name: hello-world
   annotations:
@@ -42,10 +42,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - kuard.test.long-bui.de
-      secretName: test-whoami-secret
+        - kuard.long-bui.de
+      secretName: test-whoami1-secret
   rules:
-    - host: kuard.test.long-bui.de
+    - host: kuard.long-bui.de
       http:
         paths:
           - backend:

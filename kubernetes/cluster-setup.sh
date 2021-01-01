@@ -1,7 +1,12 @@
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add stable https://charts.helm.sh/stable
 
 # Hetzner Cloud Controller Manager (Adjust placeholders!)
+kubectl apply -f ./setup/hcloud-controller-manager-secrets.yaml
+
 kubectl apply -f ./setup/hcloud-controller-manager.yaml
+
+# Hetzner CSI
+kubectl apply -f ./setup/csi.yaml
 
 # Pod Network Add-On
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
@@ -11,9 +16,6 @@ kubectl -n kube-system patch deployment coredns --type json -p '[{"op":"add","pa
 # Untaint master nodes
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl label nodes --all node-role.kubernetes.io/master-
-
-# Hetzner CSI
-kubectl apply -f ./setup/csi.yaml
 
 # Metrics server
 helm install metrics-server stable/metrics-server --namespace kube-system --values ./metrics-server/values.yaml
@@ -25,11 +27,9 @@ helm install dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kub
 
 # Ingress
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 kubectl create namespace ingress
-# Don't use nginx/nginx-ingress yet, it doesn't seem to work
-helm install ingress ingress-nginx/ingress-nginx --namespace ingress --values ./ingress-controller/values.yaml
+helm upgrade ingress ingress-nginx/ingress-nginx --namespace ingress --values ./ingress-controller/values.yaml
 # Let's Encrypt for Ingresses
 helm repo add jetstack https://charts.jetstack.io
 sleep 5
