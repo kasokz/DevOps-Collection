@@ -43,7 +43,3 @@ helm install prometheus-operator stable/prometheus-operator --namespace monitori
 
 # Gitlab-Runner
 helm install gitlab-runner gitlab/gitlab-runner -f ./gitlab-runner/values.yaml --set runnerRegistrationToken="<TOKEN>" -n gitlab-resources
-
-# MinIO Object Storage
-kubectl create ns minio
-helm install minio stable/minio --values ./minio/values.yaml -n minio
