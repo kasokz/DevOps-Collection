@@ -18,7 +18,8 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl label nodes --all node-role.kubernetes.io/master-
 
 # Metrics server
-helm install metrics-server stable/metrics-server --namespace kube-system --values ./metrics-server/values.yaml
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+helm install metrics-server metrics-server/metrics-server --namespace kube-system --values ./metrics-server/values.yaml
 
 # Dashboard
 kubectl create ns kubernetes-dashboard
@@ -34,7 +35,7 @@ helm upgrade ingress ingress-nginx/ingress-nginx --namespace ingress --values ./
 helm repo add jetstack https://charts.jetstack.io
 sleep 5
 kubectl label namespace ingress certmanager.k8s.io/disable-validation=true
-helm install cert-manager jetstack/cert-manager --namespace ingress --version v1.0.3 --set installCRDs=true
+helm install cert-manager jetstack/cert-manager --namespace ingress --set installCRDs=true
 sleep 5
 kubectl apply -f ./ingress-controller/cert-manager
 
