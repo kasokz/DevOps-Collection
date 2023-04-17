@@ -2,15 +2,16 @@ helm repo add stable https://charts.helm.sh/stable
 
 # Hetzner Cloud Controller Manager (Adjust placeholders!)
 kubectl apply -f ./setup/hcloud-controller-manager-secrets.yaml
-
-kubectl apply -f ./setup/hcloud-controller-manager.yaml
+helm repo add hcloud https://charts.hetzner.cloud
+helm repo update hcloud
+helm install hccm hcloud/hcloud-cloud-controller-manager -n kube-system
 
 # Hetzner CSI
-kubectl apply -f ./setup/csi.yaml
+kubectl apply -f https://raw.githubusercontent.com/hetznercloud/csi-driver/v2.2.0/deploy/kubernetes/hcloud-csi.yml
 
 # Pod Network Add-On
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl -n kube-system patch daemonset kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+kubectl -n kube-flannel patch daemonset kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
 kubectl -n kube-system patch deployment coredns --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
 
 # Untaint master nodes

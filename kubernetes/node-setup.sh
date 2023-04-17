@@ -25,17 +25,18 @@ modprobe overlay
 modprobe br_netfilter
 
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | tee /etc/apt/trusted.gpg.d/kubernetes.gpg
 cat <<EOF >/etc/apt/sources.list.d/docker-and-kubernetes.list
         deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
 EOF
-apt-get update
-apt-get install -y containerd kubelet=1.22.6-00 kubeadm=1.22.6-00 kubectl=1.22.6-00
-apt-mark hold containerd kubelet kubeadm kubectl
+apt-get update &&
+        apt-get install -y containerd kubelet=1.27.0-00 kubeadm=1.27.0-00 kubectl=1.27.0-00 &&
+        apt-mark hold containerd kubelet kubeadm kubectl
 
 mkdir -p /etc/containerd
 containerd config default | tee /etc/containerd/config.toml
-sed -i '/\[plugins."io.containerd.grpc.v1.cri".cni\]/i \\t  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]\n\t    SystemdCgroup = true' /etc/containerd/config.toml
+sed '/SystemdCgroup /s/=.*$/= true/' /etc/containerd/config.toml
+systemctl restart containerd
 
 cat <<EOF >>/etc/sysctl.conf
 # Allow IP forwarding for kubernetes
@@ -45,3 +46,7 @@ net.ipv4.ip_forward = 1
 net.ipv6.conf.default.forwarding = 1
 EOF
 sysctl -p
+
+mkdir -p /opt/cni/bin
+curl -O -L https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz
+tar -C /opt/cni/bin -xzf cni-plugins-linux-amd64-v1.2.0.tgz
