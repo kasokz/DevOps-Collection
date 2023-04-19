@@ -1,5 +1,6 @@
 #!/bin/bash
 swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 apt-get update
 
 mkdir /etc/systemd/system/kubelet.service.d
@@ -35,7 +36,7 @@ apt-get update &&
 
 mkdir -p /etc/containerd
 containerd config default | tee /etc/containerd/config.toml
-sed '/SystemdCgroup /s/=.*$/= true/' /etc/containerd/config.toml
+sed -i '/SystemdCgroup /s/=.*$/= true/' /etc/containerd/config.toml
 systemctl restart containerd
 
 cat <<EOF >>/etc/sysctl.conf
@@ -50,3 +51,9 @@ sysctl -p
 mkdir -p /opt/cni/bin
 curl -O -L https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz
 tar -C /opt/cni/bin -xzf cni-plugins-linux-amd64-v1.2.0.tgz
+rm cni-plugins-linux-amd64-v1.2.0.tgz
+
+cat << EOF >> /etc/crictl.yaml
+runtime-endpoint: "unix:///run/containerd/containerd.sock"
+image-endpoint: "unix:///run/containerd/containerd.sock"
+EOF
