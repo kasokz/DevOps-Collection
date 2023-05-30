@@ -26,10 +26,9 @@ modprobe overlay
 modprobe br_netfilter
 
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg >> /etc/apt/trusted.gpg.d/kubernetes.gpg
-cat <<EOF >/etc/apt/sources.list.d/docker-and-kubernetes.list
-        deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
-EOF
+mkdir /etc/apt/keyrings
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 apt-get update &&
         apt-get install -y containerd kubelet=1.27.0-00 kubeadm=1.27.0-00 kubectl=1.27.0-00 &&
         apt-mark hold containerd kubelet kubeadm kubectl

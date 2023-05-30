@@ -4,7 +4,7 @@ helm repo add stable https://charts.helm.sh/stable
 kubectl apply -f ./setup/hcloud-controller-manager-secrets.yaml
 helm repo add hcloud https://charts.hetzner.cloud
 helm repo update hcloud
-helm upgrade --install hccm hcloud/hcloud-cloud-controller-manager -n kube-system
+helm upgrade --install hccm hcloud/hcloud-cloud-controller-manager -n kube-system --set networking.enabled=true
 
 # Hetzner CSI
 kubectl apply -f https://raw.githubusercontent.com/hetznercloud/csi-driver/v2.2.0/deploy/kubernetes/hcloud-csi.yml
@@ -24,7 +24,7 @@ helm upgrade --install metrics-server metrics-server/metrics-server --namespace 
 # Dashboard
 kubectl create ns kubernetes-dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-helm upgrade --install dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --values ./dashboard/values.yaml --create-namespace
+helm upgrade --install dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace --values ./dashboard/values.yaml
 
 # Ingress
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -43,4 +43,5 @@ kubectl apply -f ./ingress-controller/cert-manager
 helm upgrade --install prometheus-operator stable/prometheus-operator --namespace monitoring --values ./monitoring/prometheus-operator/values.yaml
 
 # Gitlab-Runner
-helm upgrade --install gitlab-runner gitlab/gitlab-runner -f ./gitlab-runner/values.yaml --set runnerRegistrationToken="<TOKEN>" -n gitlab-resources
+helm repo add gitlab https://charts.gitlab.io
+helm upgrade --install gitlab-runner gitlab/gitlab-runner -n gitlab-resources --create-namespace -f gitlab-runner/values.yaml
