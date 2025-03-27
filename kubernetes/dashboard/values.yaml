@@ -1,17 +1,16 @@
-ingress:
-  enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-  className: nginx
-  paths:
-    - /
-  hosts:
-    - kubernetes-dashboard.long-bui.de
-  tls:
-    - secretName: kubernetes-dashboard-tls
-      hosts:
-        - kubernetes-dashboard.long-bui.de
-serviceAccount:
-  name: dashboard-user
+app:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    ingressClassName: nginx
+    hosts:
+      - kubernetes-dashboard.long-bui.de
+    tls:
+      enabled: true
+      secretName: kubernetes-dashboard-tls
+    issuer:
+      name: letsencrypt-prod
+      scope: cluster
 metricsScraper:
   enabled: true
