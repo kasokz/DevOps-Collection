@@ -27,10 +27,12 @@ modprobe br_netfilter
 
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 mkdir /etc/apt/keyrings
-curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
 apt-get update &&
-        apt-get install -y containerd kubelet=1.27.0-00 kubeadm=1.27.0-00 kubectl=1.27.0-00 &&
+        apt-get install -y containerd kubelet kubeadm kubectl &&
         apt-mark hold containerd kubelet kubeadm kubectl
 
 mkdir -p /etc/containerd
